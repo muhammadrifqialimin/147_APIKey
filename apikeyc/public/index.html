@@ -60,5 +60,50 @@
       <button id="verify">Verify Token</button>
       <p id="message"></p>
     </div>
+
+    <script>
+      const tokenInput = document.getElementById("token");
+      const message = document.getElementById("message");
+
+      // Klik tombol Generate
+      document
+        .getElementById("generate")
+        .addEventListener("click", async () => {
+          try {
+            const res = await fetch("/generate");
+            const data = await res.json();
+            tokenInput.value = data.token;
+            message.textContent = data.message;
+            message.style.color = "green";
+          } catch (err) {
+            message.textContent = "❌ Gagal generate token.";
+            message.style.color = "red";
+          }
+        });
+
+      // Klik tombol Verify
+      document.getElementById("verify").addEventListener("click", async () => {
+        const token = tokenInput.value.trim();
+        if (!token) {
+          message.textContent = "⚠️ Masukkan token terlebih dahulu.";
+          message.style.color = "orange";
+          return;
+        }
+
+        try {
+          const res = await fetch("/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token }),
+          });
+          const data = await res.json();
+          message.textContent = data.message;
+          message.style.color = data.valid ? "green" : "red";
+        } catch (err) {
+          message.textContent = "❌ Gagal memverifikasi token.";
+          message.style.color = "red";
+        }
+      });
+    </script>
   </body>
 </html>
