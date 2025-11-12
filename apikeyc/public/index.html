@@ -62,26 +62,27 @@
     </div>
 
     <script>
+      const API_BASE = "http://localhost:3000"; // pastikan sesuai port servermu
       const tokenInput = document.getElementById("token");
       const message = document.getElementById("message");
 
-      // Klik tombol Generate
+      // Generate Token
       document
         .getElementById("generate")
         .addEventListener("click", async () => {
           try {
-            const res = await fetch("/generate");
+            const res = await fetch(`${API_BASE}/generate`);
             const data = await res.json();
-            tokenInput.value = data.token;
+            tokenInput.value = data.token || "";
             message.textContent = data.message;
-            message.style.color = "green";
-          } catch (err) {
+            message.style.color = data.success ? "green" : "red";
+          } catch {
             message.textContent = "❌ Gagal generate token.";
             message.style.color = "red";
           }
         });
 
-      // Klik tombol Verify
+      // Verify Token
       document.getElementById("verify").addEventListener("click", async () => {
         const token = tokenInput.value.trim();
         if (!token) {
@@ -91,7 +92,7 @@
         }
 
         try {
-          const res = await fetch("/verify", {
+          const res = await fetch(`${API_BASE}/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token }),
@@ -99,7 +100,7 @@
           const data = await res.json();
           message.textContent = data.message;
           message.style.color = data.valid ? "green" : "red";
-        } catch (err) {
+        } catch {
           message.textContent = "❌ Gagal memverifikasi token.";
           message.style.color = "red";
         }

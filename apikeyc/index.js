@@ -25,7 +25,8 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "Rifqy2004_", // sesuaikan
-  database: "PraktikumToken", // sesuaikan
+  database: "PraktikumToken",
+  port: 3309, // sesuaikan
 });
 
 // Cek koneksi database
